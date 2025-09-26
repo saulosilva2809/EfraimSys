@@ -1,0 +1,772 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastrar Nova Conta - Sistema Financeiro{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .form-header h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .form-header .icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .form-header p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .form-section {
+        margin-bottom: 2.5rem;
+        padding: 2rem;
+        background: var(--light-bg);
+        border-radius: 15px;
+        border: 1px solid var(--border-color);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--accent-color);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: var(--primary-color);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .form-control:hover {
+        border-color: var(--accent-color);
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: var(--primary-color);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .form-select:hover {
+        border-color: var(--accent-color);
+    }
+
+    .input-group {
+        display: flex;
+        width: 100%;
+    }
+
+    .input-group-text {
+        background: var(--light-bg);
+        border: 2px solid var(--border-color);
+        border-right: none;
+        border-radius: 8px 0 0 8px;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+    }
+
+    .form-check {
+        margin-bottom: 1rem;
+    }
+
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: 0.125rem;
+        margin-right: 0.5rem;
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+    }
+
+    .form-check-input:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1);
+    }
+
+    .form-switch .form-check-input {
+        width: 2rem;
+        border-radius: 1rem;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%28255,255,255,1%29'/%3e%3c/svg%3e");
+    }
+
+    .form-switch .form-check-input:checked {
+        background-position: right center;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%28255,255,255,1%29'/%3e%3c/svg%3e");
+    }
+
+    .form-check-label {
+        font-weight: 500;
+        color: var(--text-primary);
+        cursor: pointer;
+    }
+
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: #dc3545;
+        font-weight: 500;
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+        font-style: italic;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 15px rgba(43, 108, 176, 0.3);
+        position: relative;
+        overflow: hidden;
+        min-width: 180px;
+    }
+    
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+    
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(43, 108, 176, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-primary:active {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(43, 108, 176, 0.3);
+    }
+
+    .btn-secondary {
+        background: var(--light-bg);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-width: 180px;
+    }
+
+    .btn-secondary:hover {
+        background: var(--border-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .breadcrumb {
+        background: transparent;
+        padding: 1rem 0;
+        margin-bottom: 0;
+    }
+
+    .breadcrumb-item a {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .breadcrumb-item a:hover {
+        color: var(--primary-color);
+    }
+
+    .breadcrumb-item.active {
+        color: var(--text-muted);
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -0.75rem;
+    }
+
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 0 0.75rem;
+    }
+
+    .col-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        padding: 0 0.75rem;
+    }
+
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--danger-color);
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--danger-color);
+        box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            margin: 1rem;
+            padding: 2rem;
+        }
+
+        .form-header h1 {
+            font-size: 2rem;
+            flex-direction: column;
+        }
+
+        .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Form Container -->
+            <div class="form-container">
+                <!-- Form Header -->
+                <div class="form-header">
+                    <h1>
+                        <div class="icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        Nova Conta Bancária
+                    </h1>
+                    <p>Cadastre uma nova conta bancária para gerenciar as finanças da empresa</p>
+                </div>
+
+                <!-- Form -->
+                <form method="post" novalidate id="accountForm">
+                    {% csrf_token %}
+                    
+                    <!-- Informações Básicas -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Informações Básicas
+                        </h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label">
+                                        Nome da Conta *
+                                    </label>
+                                    <input type="text" name="{{ form.name.name }}" class="form-control{% if form.name.errors %} is-invalid{% endif %}" 
+                                           id="{{ form.name.id_for_label }}" value="{{ form.name.value|default:'' }}" 
+                                           placeholder="Ex: Conta Principal, Conta Corrente Empresa">
+                                    {% if form.name.help_text %}
+                                        <div class="form-text">{{ form.name.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.name.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.name.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.bank.id_for_label }}" class="form-label">
+                                        Banco *
+                                    </label>
+                                    <select name="{{ form.bank.name }}" class="form-select{% if form.bank.errors %} is-invalid{% endif %}" 
+                                            id="{{ form.bank.id_for_label }}">
+                                        <option value="">Selecione um banco</option>
+                                        {% for value, label in form.bank.field.choices %}
+                                            {% if value %}
+                                                <option value="{{ value }}"{% if form.bank.value == value %} selected{% endif %}>{{ label }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    {% if form.bank.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.bank.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.account_type.id_for_label }}" class="form-label">
+                                        Tipo de Conta *
+                                    </label>
+                                    <select name="{{ form.account_type.name }}" class="form-select{% if form.account_type.errors %} is-invalid{% endif %}" 
+                                            id="{{ form.account_type.id_for_label }}">
+                                        <option value="">Selecione o tipo de conta</option>
+                                        {% for value, label in form.account_type.field.choices %}
+                                            {% if value %}
+                                                <option value="{{ value }}"{% if form.account_type.value == value %} selected{% endif %}>{{ label }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    {% if form.account_type.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.account_type.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.currency.id_for_label }}" class="form-label">
+                                        Moeda *
+                                    </label>
+                                    <select name="{{ form.currency.name }}" class="form-select{% if form.currency.errors %} is-invalid{% endif %}" 
+                                            id="{{ form.currency.id_for_label }}">
+                                        <option value="">Selecione a moeda</option>
+                                        {% for value, label in form.currency.field.choices %}
+                                            {% if value %}
+                                                <option value="{{ value }}"{% if form.currency.value == value %} selected{% endif %}>{{ label }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    {% if form.currency.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.currency.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dados Bancários -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-building"></i>
+                            Dados Bancários
+                        </h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.agency.id_for_label }}" class="form-label">
+                                        Agência *
+                                    </label>
+                                    <input type="text" name="{{ form.agency.name }}" class="form-control{% if form.agency.errors %} is-invalid{% endif %}" 
+                                           id="{{ form.agency.id_for_label }}" value="{{ form.agency.value|default:'' }}" 
+                                           placeholder="Ex: 1234-5">
+                                    {% if form.agency.help_text %}
+                                        <div class="form-text">{{ form.agency.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.agency.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.agency.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.account_number.id_for_label }}" class="form-label">
+                                        Número da Conta *
+                                    </label>
+                                    <input type="text" name="{{ form.account_number.name }}" class="form-control{% if form.account_number.errors %} is-invalid{% endif %}" 
+                                           id="{{ form.account_number.id_for_label }}" value="{{ form.account_number.value|default:'' }}" 
+                                           placeholder="Ex: 12345-6">
+                                    {% if form.account_number.help_text %}
+                                        <div class="form-text">{{ form.account_number.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.account_number.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.account_number.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configurações Financeiras -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-dollar-sign"></i>
+                            Configurações Financeiras
+                        </h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.current_balance.id_for_label }}" class="form-label">
+                                        Saldo Atual
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text currency-symbol">R$</span>
+                                        <input type="text" name="{{ form.current_balance.name }}" class="form-control{% if form.current_balance.errors %} is-invalid{% endif %}" 
+                                               id="{{ form.current_balance.id_for_label }}" value="{{ form.current_balance.value|default:'' }}" 
+                                               placeholder="0,00">
+                                    </div>
+                                    <div class="form-text">Saldo atual da conta (pode ser alterado posteriormente)</div>
+                                    {% if form.current_balance.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.current_balance.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.is_active.id_for_label }}" class="form-label">
+                                        Status da Conta
+                                    </label>
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" name="{{ form.is_active.name }}" class="form-check-input{% if form.is_active.errors %} is-invalid{% endif %}" 
+                                               id="{{ form.is_active.id_for_label }}"{% if form.is_active.value %} checked{% endif %}>
+                                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                            Conta Ativa
+                                        </label>
+                                    </div>
+                                    {% if form.is_active.help_text %}
+                                        <div class="form-text">{{ form.is_active.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.is_active.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.is_active.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informações Adicionais -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-sticky-note"></i>
+                            Informações Adicionais
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                Descrição
+                            </label>
+                            <textarea name="{{ form.description.name }}" class="form-control{% if form.description.errors %} is-invalid{% endif %}" 
+                                      id="{{ form.description.id_for_label }}" rows="3" 
+                                      placeholder="Descrição adicional sobre a conta (opcional)">{{ form.description.value|default:'' }}</textarea>
+                            <div class="form-text">Informações extras sobre a conta (opcional)</div>
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.description.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            Cadastrar Conta
+                        </button>
+                        <a href="{% url 'list_accounts_view' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add form validation classes
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const inputs = form.querySelectorAll('.form-control, .form-select');
+        
+        inputs.forEach(input => {
+            // Add Bootstrap classes
+            if (input.tagName === 'SELECT') {
+                input.classList.add('form-select');
+            } else if (input.tagName === 'TEXTAREA') {
+                input.classList.add('form-control');
+                input.style.minHeight = '120px';
+                input.style.resize = 'vertical';
+            } else {
+                input.classList.add('form-control');
+            }
+            
+            // Add error classes if there are errors
+            const errorDiv = input.parentNode.querySelector('.invalid-feedback');
+            if (errorDiv) {
+                input.classList.add('is-invalid');
+            }
+        });
+        
+        // Currency selector functionality
+        const currencySelector = document.querySelector('#{{ form.currency.id_for_label }}');
+        const currencySymbol = document.querySelector('.currency-symbol');
+        
+        if (currencySelector && currencySymbol) {
+            currencySelector.addEventListener('change', function() {
+                const selectedCurrency = this.value;
+                const currencySymbols = {
+                    'BRL': 'R$',
+                    'USD': '$',
+                    'EUR': '€',
+                    'GBP': '£',
+                    'JPY': '¥'
+                };
+                
+                const newSymbol = currencySymbols[selectedCurrency] || 'R$';
+                currencySymbol.textContent = newSymbol;
+            });
+        }
+        
+        // Format currency input - Versão Simplificada
+        const balanceInput = document.querySelector('#id_current_balance');
+        if (balanceInput) {
+            // Remove o type="number" para permitir formatação personalizada
+            balanceInput.type = 'text';
+            
+            balanceInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+                
+                // Remove tudo exceto números, vírgula e ponto
+                value = value.replace(/[^\d.,]/g, '');
+                
+                // Evita múltiplas vírgulas ou pontos
+                let commaCount = (value.match(/,/g) || []).length;
+                let dotCount = (value.match(/\./g) || []).length;
+                
+                if (commaCount > 1) {
+                    value = value.replace(/,/g, '').replace(/(\d+)/, '$1,');
+                }
+                
+                if (dotCount > 1) {
+                    value = value.replace(/\./g, '').replace(/(\d+)/, '$1.');
+                }
+                
+                // Se tem vírgula, limita a 2 dígitos após ela
+                if (value.includes(',')) {
+                    let parts = value.split(',');
+                    if (parts[1] && parts[1].length > 2) {
+                        parts[1] = parts[1].substring(0, 2);
+                        value = parts.join(',');
+                    }
+                }
+                
+                // Se tem ponto, limita a 2 dígitos após ele
+                if (value.includes('.')) {
+                    let parts = value.split('.');
+                    if (parts[1] && parts[1].length > 2) {
+                        parts[1] = parts[1].substring(0, 2);
+                        value = parts.join('.');
+                    }
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Ao sair do campo, padroniza o formato
+            balanceInput.addEventListener('blur', function(e) {
+                let value = e.target.value;
+                if (value && value !== '') {
+                    // Se tem ponto, converte para vírgula (padrão brasileiro)
+                    if (value.includes('.') && !value.includes(',')) {
+                        value = value.replace('.', ',');
+                    }
+                    
+                    // Garante 2 casas decimais
+                    if (!value.includes(',')) {
+                        value = value + ',00';
+                    } else {
+                        let parts = value.split(',');
+                        if (parts[1].length === 1) {
+                            parts[1] = parts[1] + '0';
+                        }
+                        value = parts.join(',');
+                    }
+                    
+                    e.target.value = value;
+                }
+            });
+        }
+        
+        // Interceptar envio do formulário para converter vírgula em ponto
+        const accountForm = document.getElementById('accountForm');
+        if (accountForm) {
+            accountForm.addEventListener('submit', function(e) {
+                const balanceInput = document.querySelector('#id_current_balance');
+                if (balanceInput && balanceInput.value) {
+                    // Converte vírgula para ponto antes do envio
+                    let value = balanceInput.value.replace(',', '.');
+                    // Remove espaços e outros caracteres não numéricos exceto ponto
+                    value = value.replace(/[^\d.]/g, '');
+                    balanceInput.value = value;
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

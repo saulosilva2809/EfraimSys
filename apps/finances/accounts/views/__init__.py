@@ -1,0 +1,5 @@
+from .create_account_view import CreateAccountView
+from .detail_account_view import DetailAccountView
+from .delete_account_view import DeleteAccountView
+from .list_accounts_view import ListAccountsView
+from .update_account_view import UpdateAccountView

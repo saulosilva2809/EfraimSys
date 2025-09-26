@@ -1,0 +1,636 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load money_format %}
+
+{% block title %}Dashboard Financeiro - EfraimSys{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        color: white;
+        box-shadow: var(--card-shadow);
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .page-title .icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .page-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    /* KPI Cards - Seguindo padrão EfraimSys */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .kpi-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .kpi-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 20px rgba(43, 108, 176, 0.3);
+    }
+
+    .kpi-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .kpi-label {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+
+    .kpi-trend {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .trend-up {
+        color: var(--success-color);
+    }
+
+    .trend-down {
+        color: var(--danger-color);
+    }
+
+    /* Layout Principal */
+    .main-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Content Cards - Seguindo padrão EfraimSys */
+    .content-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--accent-color);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .section-title i {
+        color: var(--accent-color);
+    }
+
+    /* Gráficos */
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin-bottom: 1rem;
+    }
+
+    .chart-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        border: 2px dashed var(--border-color);
+    }
+
+    /* Transações Recentes */
+    .transaction-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .transaction-item:last-child {
+        border-bottom: none;
+    }
+
+    .transaction-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .transaction-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        color: white;
+    }
+
+    .transaction-icon.receita {
+        background: var(--success-color);
+    }
+
+    .transaction-icon.despesa {
+        background: var(--danger-color);
+    }
+
+    .transaction-details h6 {
+        margin: 0 0 0.25rem 0;
+        font-weight: 600;
+        color: var(--secondary-color);
+    }
+
+    .transaction-details small {
+        color: var(--text-muted);
+    }
+
+    .transaction-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .transaction-value.receita {
+        color: var(--success-color);
+    }
+
+    .transaction-value.despesa {
+        color: var(--danger-color);
+    }
+
+    /* Gastos por Categoria */
+    .category-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .category-item:last-child {
+        border-bottom: none;
+    }
+
+    .category-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .category-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .category-name {
+        font-weight: 500;
+        color: var(--secondary-color);
+    }
+
+    .category-value {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    /* Ações Rápidas */
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .action-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        color: white;
+        border: none;
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Responsividade */
+    @media (max-width: 992px) {
+        .main-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-header {
+            padding: 2rem 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+        }
+
+        .kpi-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .content-card {
+            padding: 1.5rem;
+        }
+
+        .quick-actions-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header do Dashboard -->
+    <div class="page-header">
+        <div class="page-title">
+            <div class="icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            Dashboard Financeiro
+        </div>
+        <p class="page-subtitle">Visão geral das suas finanças em tempo real</p>
+    </div>
+
+    <!-- KPIs Principais -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="kpi-value" id="total-receitas">R$ {{ total_recipes|money_format }}</div>
+            <div class="kpi-label">Total de Receitas</div>
+            <div class="kpi-trend trend-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>+12.5% vs mês anterior</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fas fa-arrow-down"></i>
+            </div>
+            <div class="kpi-value" id="total-despesas">R$ {{ total_expenses|money_format }}</div>
+            <div class="kpi-label">Total de Despesas</div>
+            <div class="kpi-trend trend-down">
+                <i class="fas fa-arrow-down"></i>
+                <span>+5.2% vs mês anterior</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fas fa-balance-scale"></i>
+            </div>
+            <div class="kpi-value" id="saldo-liquido">R$ {{ net_balance|money_format }}</div>
+            <div class="kpi-label">Saldo Líquido</div>
+            <div class="kpi-trend trend-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>+18.7% vs mês anterior</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fas fa-university"></i>
+            </div>
+            <div class="kpi-value" id="saldo-contas">R$ {{ total_balance|money_format }}</div>
+            <div class="kpi-label">Saldo Total das Contas</div>
+            <div class="kpi-trend trend-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>+3.1% vs mês anterior</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layout Principal -->
+    <div class="main-grid">
+        <!-- Coluna Esquerda - Gráficos -->
+        <div class="left-column">
+            <!-- Fluxo de Caixa -->
+            <div class="content-card">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-line"></i>
+                    Fluxo de Caixa (Últimos 6 Meses)
+                </h3>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-line" style="font-size: 2rem; margin-right: 1rem;"></i>
+                        Gráfico de Fluxo de Caixa será implementado aqui
+                    </div>
+                </div>
+            </div>
+
+            <!-- Receitas vs Despesas -->
+            <div class="content-card">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Receitas vs Despesas (Mensal)
+                </h3>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-bar" style="font-size: 2rem; margin-right: 1rem;"></i>
+                        Gráfico de Receitas vs Despesas será implementado aqui
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna Direita - Informações -->
+        <div class="right-column">
+            <!-- Transações Recentes -->
+            <div class="content-card">
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Transações Recentes
+                </h3>
+                
+                {% if recent_transactions %}
+                    {% for transaction in recent_transactions %}
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-icon {{ transaction.type_transaction }}">
+                                {% if transaction.type_transaction == 'receita' %}
+                                    <i class="fas fa-plus"></i>
+                                {% else %}
+                                    <i class="fas fa-minus"></i>
+                                {% endif %}
+                            </div>
+                            <div class="transaction-details">
+                                <h6>{{ transaction.description|default:"Transação sem descrição" }}</h6>
+                                <small>{{ transaction.created_at|date:"d/m/Y H:i" }}</small>
+                            </div>
+                        </div>
+                        <div class="transaction-value {{ transaction.type_transaction }}">
+                            {% if transaction.type_transaction == 'receita' %}+{% else %}-{% endif %}R$ {{ transaction.value|money_format }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-icon" style="background: var(--text-muted);">
+                                <i class="fas fa-info"></i>
+                            </div>
+                            <div class="transaction-details">
+                                <h6>Nenhuma transação encontrada</h6>
+                                <small>Adicione transações para visualizá-las aqui</small>
+                            </div>
+                        </div>
+                        <div class="transaction-value" style="color: var(--text-muted);">
+                            R$ 0,00
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Gastos por Categoria -->
+            <div class="content-card">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Gastos por Categoria
+                </h3>
+                
+                <div class="category-item">
+                    <div class="category-info">
+                        <div class="category-color" style="background: #ef4444;"></div>
+                        <span class="category-name">Salários</span>
+                    </div>
+                    <span class="category-value">R$ 4.500,00</span>
+                </div>
+
+                <div class="category-item">
+                    <div class="category-info">
+                        <div class="category-color" style="background: #f97316;"></div>
+                        <span class="category-name">Materiais</span>
+                    </div>
+                    <span class="category-value">R$ 1.850,00</span>
+                </div>
+
+                <div class="category-item">
+                    <div class="category-info">
+                        <div class="category-color" style="background: #eab308;"></div>
+                        <span class="category-name">Serviços</span>
+                    </div>
+                    <span class="category-value">R$ 1.200,00</span>
+                </div>
+
+                <div class="category-item">
+                    <div class="category-info">
+                        <div class="category-color" style="background: #22c55e;"></div>
+                        <span class="category-name">Impostos</span>
+                    </div>
+                    <span class="category-value">R$ 870,00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações Rápidas -->
+            <div class="content-card">
+                <h3 class="section-title">
+                    <i class="fas fa-bolt"></i>
+                    Ações Rápidas
+                </h3>
+        <div class="quick-actions-grid">
+            <a href="{% url 'create_transaction_view' %}" class="action-btn">
+                <i class="fas fa-plus"></i>
+                Nova Transação
+            </a>
+            <a href="{% url 'list_accounts_view' %}" class="action-btn">
+                <i class="fas fa-university"></i>
+                Gerenciar Contas
+            </a>
+            <a href="#" class="action-btn">
+                <i class="fas fa-file-alt"></i>
+                Relatórios
+            </a>
+            <a href="#" class="action-btn">
+                <i class="fas fa-cog"></i>
+                Configurações
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animação dos contadores KPI
+        function animateCounter(element, target, duration = 2000) {
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                
+                // Formatação para moeda brasileira
+                const formatted = new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                }).format(current);
+                
+                element.textContent = formatted;
+            }, 16);
+        }
+
+        // Animar KPIs quando a página carregar
+        const kpiValues = [
+            { element: document.getElementById('total-receitas'), value: 15750 },
+            { element: document.getElementById('total-despesas'), value: 8420 },
+            { element: document.getElementById('saldo-liquido'), value: 7330 },
+            { element: document.getElementById('saldo-contas'), value: 23890 }
+        ];
+
+        kpiValues.forEach(kpi => {
+            if (kpi.element) {
+                animateCounter(kpi.element, kpi.value);
+            }
+        });
+
+        // Efeito hover nos cards KPI
+        const kpiCards = document.querySelectorAll('.kpi-card');
+        kpiCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Efeito hover nos botões de ação (simplificado)
+        const actionBtns = document.querySelectorAll('.action-btn');
+        actionBtns.forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Animação de entrada simplificada apenas para KPIs
+        const kpiCards = document.querySelectorAll('.kpi-card');
+        kpiCards.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(10px)';
+            el.style.transition = `opacity 0.2s ease ${index * 0.03}s, transform 0.2s ease ${index * 0.03}s`;
+            
+            // Usar setTimeout ao invés de IntersectionObserver para melhor performance
+            setTimeout(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, index * 30);
+        });
+
+        // Remover atualização em tempo real para melhor performance
+        // setInterval removido para evitar processamento desnecessário
+
+        console.log('Dashboard Financeiro carregado com sucesso!');
+    });
+</script>
+{% endblock %}

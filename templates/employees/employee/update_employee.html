@@ -1,0 +1,821 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Funcionário - Sistema Efraim{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .form-header h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .form-header .icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .form-header p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .form-section {
+        margin-bottom: 2.5rem;
+        padding: 2rem;
+        background: var(--light-bg);
+        border-radius: 15px;
+        border: 1px solid var(--border-color);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--accent-color);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: var(--primary-color);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+        opacity: 0.7;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: var(--primary-color);
+        cursor: pointer;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .form-check-input {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+    }
+
+    .form-check-label {
+        font-weight: 500;
+        color: var(--primary-color);
+        cursor: pointer;
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+        font-family: inherit;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 3rem;
+    }
+
+    .btn {
+        padding: 1rem 2.5rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        color: white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+        color: white;
+    }
+
+    .btn-secondary {
+        background: var(--secondary-color);
+        color: white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .breadcrumb {
+        background: transparent;
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .breadcrumb-item {
+        color: var(--text-muted);
+    }
+
+    .breadcrumb-item.active {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "/";
+        color: var(--text-muted);
+        margin: 0 0.5rem;
+    }
+
+    .breadcrumb a {
+        color: var(--accent-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: var(--primary-color);
+    }
+
+    .error-message {
+        color: var(--danger-color);
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .required {
+        color: var(--danger-color);
+    }
+
+    .current-photo {
+        max-width: 150px;
+        max-height: 150px;
+        border-radius: 10px;
+        border: 2px solid var(--border-color);
+        margin-bottom: 1rem;
+    }
+
+    .photo-preview {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            margin: 1rem;
+            padding: 2rem 1.5rem;
+        }
+
+        .form-header h1 {
+            font-size: 2rem;
+            flex-direction: column;
+        }
+
+        .form-section {
+            padding: 1.5rem;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Form Container -->
+<div class="form-container">
+    <!-- Form Header -->
+    <div class="form-header">
+        <h1>
+            <div class="icon">
+                <i class="fas fa-user-edit"></i>
+            </div>
+            Editar Funcionário
+        </h1>
+        <p>Atualize as informações de {{ object.first_name }} {{ object.last_name }}</p>
+    </div>
+
+    <!-- Form -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Informações Pessoais -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-user"></i>
+                Informações Pessoais
+            </h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                            Primeiro Nome <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="{{ form.first_name.id_for_label }}" 
+                            name="{{ form.first_name.name }}" 
+                            value="{{ object.first_name|default:'' }}"
+                            placeholder="Ex: João"
+                            required
+                        >
+                        {% if form.first_name.errors %}
+                            <div class="error-message">
+                                {% for error in form.first_name.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                            Sobrenome <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="{{ form.last_name.id_for_label }}" 
+                            name="{{ form.last_name.name }}" 
+                            value="{{ object.last_name|default:'' }}"
+                            placeholder="Ex: Silva Santos"
+                            required
+                        >
+                        {% if form.last_name.errors %}
+                            <div class="error-message">
+                                {% for error in form.last_name.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                            E-mail
+                        </label>
+                        <input 
+                            type="email" 
+                            class="form-control" 
+                            id="{{ form.email.id_for_label }}" 
+                            name="{{ form.email.name }}" 
+                            value="{{ object.email|default:'' }}"
+                            placeholder="exemplo@email.com"
+                        >
+                        {% if form.email.errors %}
+                            <div class="error-message">
+                                {% for error in form.email.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                            Telefone
+                        </label>
+                        <input 
+                            type="tel" 
+                            class="form-control" 
+                            id="{{ form.phone_number.id_for_label }}" 
+                            name="{{ form.phone_number.name }}" 
+                            value="{{ object.phone_number|default:'' }}"
+                            placeholder="(11) 99999-9999"
+                        >
+                        {% if form.phone_number.errors %}
+                            <div class="error-message">
+                                {% for error in form.phone_number.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.cpf.id_for_label }}" class="form-label">
+                            CPF <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="{{ form.cpf.id_for_label }}" 
+                            name="{{ form.cpf.name }}" 
+                            value="{{ object.cpf|default:'' }}"
+                            placeholder="000.000.000-00"
+                            required
+                        >
+                        {% if form.cpf.errors %}
+                            <div class="error-message">
+                                {% for error in form.cpf.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.birth_date.id_for_label }}" class="form-label">
+                            Data de Nascimento
+                        </label>
+                        <input 
+                            type="date" 
+                            class="form-control" 
+                            id="{{ form.birth_date.id_for_label }}" 
+                            name="{{ form.birth_date.name }}" 
+                            value="{{ object.birth_date|date:'Y-m-d'|default:'' }}"
+                        >
+                        {% if form.birth_date.errors %}
+                            <div class="error-message">
+                                {% for error in form.birth_date.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.photo.id_for_label }}" class="form-label">
+                            Foto do Funcionário
+                        </label>
+                        {% if object.photo %}
+                            <div class="photo-preview">
+                                <img src="{{ object.photo.url }}" alt="Foto atual" class="current-photo">
+                                <p class="text-muted">Foto atual</p>
+                            </div>
+                        {% endif %}
+                        <input 
+                            type="file" 
+                            class="form-control" 
+                            id="{{ form.photo.id_for_label }}" 
+                            name="{{ form.photo.name }}"
+                            accept="image/*"
+                        >
+                        <small class="text-muted">Deixe em branco para manter a foto atual</small>
+                        {% if form.photo.errors %}
+                            <div class="error-message">
+                                {% for error in form.photo.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">
+                            Status do Funcionário
+                        </label>
+                        <div class="form-check">
+                            <input 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                id="{{ form.is_active.id_for_label }}" 
+                                name="{{ form.is_active.name }}"
+                                {% if object.is_active %}checked{% endif %}
+                            >
+                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                Funcionário Ativo
+                            </label>
+                        </div>
+                        {% if form.is_active.errors %}
+                            <div class="error-message">
+                                {% for error in form.is_active.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações Profissionais -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-briefcase"></i>
+                Informações Profissionais
+            </h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.function.id_for_label }}" class="form-label">
+                            Função <span class="required">*</span>
+                        </label>
+                        <select 
+                            class="form-select" 
+                            id="{{ form.function.id_for_label }}" 
+                            name="{{ form.function.name }}"
+                            required
+                        >
+                            <option value="">Selecione uma função</option>
+                            {% for choice in form.function.field.queryset %}
+                                <option value="{{ choice.pk }}" {% if object.function.pk == choice.pk %}selected{% endif %}>
+                                    {{ choice.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.function.errors %}
+                            <div class="error-message">
+                                {% for error in form.function.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.admission_date.id_for_label }}" class="form-label">
+                            Data de Admissão <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="date" 
+                            class="form-control" 
+                            id="{{ form.admission_date.id_for_label }}" 
+                            name="{{ form.admission_date.name }}" 
+                            value="{{ object.admission_date|date:'Y-m-d'|default:'' }}"
+                            required
+                        >
+                        {% if form.admission_date.errors %}
+                            <div class="error-message">
+                                {% for error in form.admission_date.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.salary.id_for_label }}" class="form-label">
+                            Salário <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="{{ form.salary.id_for_label }}" 
+                            name="{{ form.salary.name }}" 
+                            value="{{ form.salary.value|default:'' }}"
+                            placeholder="0.00"
+                            required
+                         >
+                        {% if form.salary.errors %}
+                            <div class="error-message">
+                                {% for error in form.salary.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.workload.id_for_label }}" class="form-label">
+                            Carga Horária (horas/semana)
+                        </label>
+                        <input 
+                            type="number" 
+                            class="form-control" 
+                            id="{{ form.workload.id_for_label }}" 
+                            name="{{ form.workload.name }}" 
+                            value="{{ object.workload|default:'40' }}"
+                            placeholder="40"
+                        >
+                        {% if form.workload.errors %}
+                            <div class="error-message">
+                                {% for error in form.workload.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.employment_type.id_for_label }}" class="form-label">
+                            Tipo de Contrato <span class="required">*</span>
+                        </label>
+                        <select 
+                            class="form-select" 
+                            id="{{ form.employment_type.id_for_label }}" 
+                            name="{{ form.employment_type.name }}"
+                            required
+                        >
+                            <option value="">Selecione o tipo de contrato</option>
+                            {% for choice in form.employment_type.field.choices %}
+                                <option value="{{ choice.0 }}" {% if object.employment_type == choice.0 %}selected{% endif %}>
+                                    {{ choice.1 }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.employment_type.errors %}
+                            <div class="error-message">
+                                {% for error in form.employment_type.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.resignation_date.id_for_label }}" class="form-label">
+                            Data de Demissão
+                        </label>
+                        <input 
+                            type="date" 
+                            class="form-control" 
+                            id="{{ form.resignation_date.id_for_label }}" 
+                            name="{{ form.resignation_date.name }}" 
+                            value="{{ form.resignation_date.value|date:'Y-m-d'|default:'' }}"
+                        >
+                        {% if form.resignation_date.errors %}
+                            <div class="error-message">
+                                {% for error in form.resignation_date.errors %}
+                                    <i class="fas fa-exclamation-circle"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Observações -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-sticky-note"></i>
+                Observações Adicionais
+            </h3>
+            
+            <div class="form-group">
+                <label for="{{ form.obs.id_for_label }}" class="form-label">
+                    Observações
+                </label>
+                <textarea 
+                    class="form-control" 
+                    id="{{ form.obs.id_for_label }}" 
+                    name="{{ form.obs.name }}"
+                    placeholder="Adicione observações relevantes sobre o funcionário..."
+                    rows="4"
+                >{{ object.obs|default:'' }}</textarea>
+                {% if form.obs.errors %}
+                    <div class="error-message">
+                        {% for error in form.obs.errors %}
+                            <i class="fas fa-exclamation-circle"></i>{{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Salvar Alterações
+            </button>
+            <a href="{% url 'list_employees_view' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-focus no primeiro campo
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstInput = document.querySelector('input[type="text"]');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    });
+
+    // Máscara para CPF
+    const cpfInput = document.querySelector('input[name="cpf"]');
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+
+    // Máscara para telefone
+    const phoneInput = document.querySelector('input[name="phone_number"]');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+
+    // Validação em tempo real
+    const requiredInputs = document.querySelectorAll('input[required], select[required]');
+    requiredInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.style.borderColor = 'var(--danger-color)';
+            } else {
+                this.style.borderColor = 'var(--success-color)';
+            }
+        });
+    });
+
+    // Confirmação antes de cancelar se houver alterações
+    const cancelBtn = document.querySelector('.btn-secondary');
+    const form = document.querySelector('form');
+    
+    if (cancelBtn && form) {
+        cancelBtn.addEventListener('click', function(e) {
+            const formData = new FormData(form);
+            let hasChanges = false;
+            
+            // Verificar se há alterações nos campos
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (input.name && input.name !== 'csrfmiddlewaretoken') {
+                    const originalValue = input.defaultValue || input.getAttribute('data-original') || '';
+                    const currentValue = input.value || '';
+                    if (originalValue !== currentValue) {
+                        hasChanges = true;
+                    }
+                }
+            });
+            
+            if (hasChanges) {
+                if (!confirm('Você tem alterações não salvas. Deseja realmente cancelar?')) {
+                    e.preventDefault();
+                }
+            }
+        });
+    }
+
+    // Preview da nova foto
+    const photoInput = document.querySelector('input[name="photo"]');
+    if (photoInput) {
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.querySelector('.photo-preview');
+                    if (preview) {
+                        const img = preview.querySelector('img');
+                        img.src = e.target.result;
+                        preview.querySelector('p').textContent = 'Nova foto (não salva)';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+</script>
+{% endblock %}

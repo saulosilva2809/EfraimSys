@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load money_format %}
+
+{% block title %}{{ object.name }} - Detalhes da Conta{% endblock %}
+
+{% block extra_css %}
+<style>
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), #1e40af);
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        min-width: 120px;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(43, 108, 176, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        min-width: 120px;
+    }
+    
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+        box-shadow: var(--card-shadow);
+    }
+    
+    .page-header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .page-header .subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+        margin-top: 0.5rem;
+    }
+    
+    .content-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .account-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .account-status.active {
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(56, 161, 105, 0.2);
+    }
+    
+    .account-status.inactive {
+        background: rgba(229, 62, 62, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(229, 62, 62, 0.2);
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .info-item {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--accent-color);
+    }
+    
+    .info-item h6 {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-item .value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+    }
+    
+    .balance-card {
+        background: linear-gradient(135deg, var(--success-color), #48bb78);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(56, 161, 105, 0.3);
+    }
+    
+    .balance-card h3 {
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .balance-card .amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .currency-symbol {
+        font-size: 2rem;
+        opacity: 0.8;
+        margin-right: 0.5rem;
+    }
+    
+    .bank-logo {
+        width: 40px;
+        height: 40px;
+        background: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+    
+    .description-card {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 1.5rem;
+    }
+    
+    .description-card h6 {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+    
+    .description-card p {
+        margin: 0;
+        line-height: 1.6;
+        color: var(--secondary-color);
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .balance-card .amount {
+            font-size: 2rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .action-buttons .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            <div class="bank-logo">
+                {% if object.bank == 'Nubank' %}
+                    <i class="fas fa-credit-card"></i>
+                {% elif object.bank == 'Inter' %}
+                    <i class="fas fa-university"></i>
+                {% elif object.bank == 'BB' %}
+                    <i class="fas fa-landmark"></i>
+                {% else %}
+                    <i class="fas fa-building"></i>
+                {% endif %}
+            </div>
+            {{ object.name }}
+        </h1>
+        <p class="subtitle">Detalhes completos da conta bancária</p>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+        <h3>Saldo Atual</h3>
+        <p class="amount">
+            <span class="currency-symbol">
+                {% if object.currency == 'BRL' %}R$
+                {% elif object.currency == 'USD' %}$
+                {% elif object.currency == 'EUR' %}€
+                {% elif object.currency == 'GBP' %}£
+                {% elif object.currency == 'JPY' %}¥
+                {% else %}R$
+                {% endif %}
+            </span>
+            {{ object.current_balance|money_format }}
+        </p>
+    </div>
+
+    <!-- Account Information -->
+    <div class="content-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">
+                <i class="fas fa-info-circle me-2"></i>
+                Informações da Conta
+            </h4>
+            <div class="account-status {% if object.is_active %}active{% else %}inactive{% endif %}">
+                <i class="fas fa-circle" style="font-size: 0.6rem;"></i>
+                {% if object.is_active %}Ativa{% else %}Inativa{% endif %}
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <h6>Banco</h6>
+                <div class="value">{{ object.get_bank_display }}</div>
+            </div>
+
+            <div class="info-item">
+                <h6>Tipo de Conta</h6>
+                <div class="value">{{ object.get_account_type_display }}</div>
+            </div>
+
+            <div class="info-item">
+                <h6>Agência</h6>
+                <div class="value">{{ object.agency }}</div>
+            </div>
+
+            <div class="info-item">
+                <h6>Número da Conta</h6>
+                <div class="value">{{ object.account_number }}</div>
+            </div>
+
+            <div class="info-item">
+                <h6>Moeda</h6>
+                <div class="value">{{ object.get_currency_display }}</div>
+            </div>
+
+            <div class="info-item">
+                <h6>Data de Criação</h6>
+                <div class="value">{{ object.created_at|date:"d/m/Y H:i" }}</div>
+            </div>
+        </div>
+
+        {% if object.description %}
+        <div class="description-card">
+            <h6>Descrição</h6>
+            <p>{{ object.description|linebreaks }}</p>
+        </div>
+        {% endif %}
+
+        <div class="action-buttons">
+            <a href="{% url 'list_accounts_view' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Voltar à Lista
+            </a>
+            <a href="{% url 'list_transactions_view' %}" class="btn btn-info">
+                <i class="fas fa-exchange-alt me-2"></i>
+                Ver Transações
+            </a>
+            <a href="{% url 'update_accounts_view' pk=object.pk %}" class="btn btn-primary">
+                <i class="fas fa-edit me-2"></i>
+                Editar Conta
+            </a>
+            <a href="{% url 'delete_account_view' pk=object.pk %}" class="btn btn-danger">
+                <i class="fas fa-trash-alt me-2"></i>
+                Excluir Conta
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add some animation on page load
+        const cards = document.querySelectorAll('.content-card, .balance-card, .page-header');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+
+        // Currency symbol animation
+        const currencySymbol = document.querySelector('.currency-symbol');
+        if (currencySymbol) {
+            currencySymbol.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1) rotate(5deg)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            currencySymbol.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) rotate(0deg)';
+            });
+        }
+    });
+</script>
+{% endblock %}
