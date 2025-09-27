@@ -1,0 +1,582 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Perfil - {{ user.get_full_name|default:user.username }} - Empreiteira Efraim{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(50%, -50%);
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: var(--dark-bg);
+        margin-bottom: 1rem;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+    }
+
+    .profile-avatar::before {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+    }
+
+    .profile-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-gold);
+        margin-bottom: 0.5rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .profile-role {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .profile-stats {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-gold);
+        display: block;
+    }
+
+    .stat-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .profile-section {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        color: var(--primary-gold);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-value {
+        color: var(--text-light);
+        font-weight: 600;
+    }
+
+    .btn-edit {
+        background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+        border: none;
+        color: var(--dark-bg);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-edit:hover {
+        background: linear-gradient(45deg, var(--secondary-gold), var(--primary-gold));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        color: var(--dark-bg);
+    }
+
+    .activity-timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+    .activity-timeline::before {
+        content: '';
+        position: absolute;
+        left: 0.75rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--primary-gold), transparent);
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 1.5rem;
+        padding-left: 1rem;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -0.5rem;
+        top: 0.5rem;
+        width: 10px;
+        height: 10px;
+        background: var(--primary-gold);
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+    }
+
+    .timeline-content {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 1rem;
+        border-left: 3px solid var(--primary-gold);
+    }
+
+    .timeline-title {
+        color: var(--text-light);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-description {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-date {
+        color: var(--primary-gold);
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .permissions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .permission-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .permission-item.active {
+        border-color: var(--primary-gold);
+        background: rgba(212, 175, 55, 0.1);
+    }
+
+    .permission-icon {
+        font-size: 2rem;
+        color: var(--primary-gold);
+        margin-bottom: 0.5rem;
+    }
+
+    .permission-item.active .permission-icon {
+        color: var(--primary-gold);
+    }
+
+    .permission-item:not(.active) .permission-icon {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    .permission-label {
+        color: var(--text-light);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .permission-item:not(.active) .permission-label {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .profile-header {
+            text-align: center;
+        }
+        
+        .profile-stats {
+            justify-content: center;
+        }
+        
+        .info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .permissions-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Profile Header -->
+<div class="profile-header">
+    <div class="row align-items-center">
+        <div class="col-md-3 text-center text-md-start">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h1 class="profile-name">{{ user.get_full_name|default:user.username }}</h1>
+            <p class="profile-role">
+                <i class="fas fa-briefcase me-2"></i>
+                {% if user.is_superuser %}
+                    Administrador do Sistema
+                {% elif user.is_staff %}
+                    Gerente
+                {% else %}
+                    Usuário
+                {% endif %}
+            </p>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-number">{{ user.date_joined|timesince }}</span>
+                    <span class="stat-label">No Sistema</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ user.last_login|timesince|default:"Nunca" }}</span>
+                    <span class="stat-label">Último Acesso</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">15</span>
+                    <span class="stat-label">Projetos</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 text-center text-md-end">
+            <a href="#" class="btn-edit">
+                <i class="fas fa-edit"></i>
+                Editar Perfil
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Personal Information -->
+    <div class="col-lg-6 mb-4">
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i class="fas fa-user-circle"></i>
+                Informações Pessoais
+            </h3>
+            
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="fas fa-user"></i>
+                    Nome de Usuário
+                </span>
+                <span class="info-value">{{ user.username }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="fas fa-envelope"></i>
+                    E-mail
+                </span>
+                <span class="info-value">{{ user.email|default:"Não informado" }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="fas fa-id-card"></i>
+                    Nome Completo
+                </span>
+                <span class="info-value">{{ user.get_full_name|default:"Não informado" }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="fas fa-calendar-plus"></i>
+                    Membro Desde
+                </span>
+                <span class="info-value">{{ user.date_joined|date:"d/m/Y" }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="fas fa-clock"></i>
+                    Último Acesso
+                </span>
+                <span class="info-value">{{ user.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Permissions -->
+    <div class="col-lg-6 mb-4">
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i class="fas fa-shield-alt"></i>
+                Permissões do Sistema
+            </h3>
+            
+            <div class="permissions-grid">
+                <div class="permission-item {% if user.is_superuser %}active{% endif %}">
+                    <div class="permission-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="permission-label">Super Admin</div>
+                </div>
+                
+                <div class="permission-item {% if user.is_staff %}active{% endif %}">
+                    <div class="permission-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <div class="permission-label">Staff</div>
+                </div>
+                
+                <div class="permission-item active">
+                    <div class="permission-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="permission-label">Projetos</div>
+                </div>
+                
+                <div class="permission-item active">
+                    <div class="permission-icon">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div class="permission-label">Relatórios</div>
+                </div>
+                
+                <div class="permission-item {% if user.is_superuser %}active{% endif %}">
+                    <div class="permission-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="permission-label">Banco de Dados</div>
+                </div>
+                
+                <div class="permission-item active">
+                    <div class="permission-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="permission-label">Dashboard</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Timeline -->
+<div class="row">
+    <div class="col-12">
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i class="fas fa-history"></i>
+                Atividades Recentes
+            </h3>
+            
+            <div class="activity-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Login no Sistema</div>
+                        <div class="timeline-description">Acesso realizado com sucesso</div>
+                        <div class="timeline-date">{{ user.last_login|date:"d/m/Y H:i"|default:"Hoje" }}</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Projeto "Residencial Solar" Atualizado</div>
+                        <div class="timeline-description">Progresso atualizado para 75%</div>
+                        <div class="timeline-date">Ontem, 14:30</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Novo Cliente Cadastrado</div>
+                        <div class="timeline-description">Maria Silva adicionada ao sistema</div>
+                        <div class="timeline-date">2 dias atrás</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Relatório Mensal Gerado</div>
+                        <div class="timeline-description">Relatório de janeiro/2024 criado</div>
+                        <div class="timeline-date">3 dias atrás</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Perfil Atualizado</div>
+                        <div class="timeline-description">Informações de contato atualizadas</div>
+                        <div class="timeline-date">1 semana atrás</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row">
+    <div class="col-12">
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i class="fas fa-bolt"></i>
+                Ações Rápidas
+            </h3>
+            
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <a href="#" class="btn btn-outline-light w-100 p-3">
+                        <i class="fas fa-edit d-block mb-2" style="font-size: 1.5rem;"></i>
+                        Editar Perfil
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="#" class="btn btn-outline-light w-100 p-3">
+                        <i class="fas fa-key d-block mb-2" style="font-size: 1.5rem;"></i>
+                        Alterar Senha
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="#" class="btn btn-outline-light w-100 p-3">
+                        <i class="fas fa-download d-block mb-2" style="font-size: 1.5rem;"></i>
+                        Baixar Dados
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="{% url 'logout_view' %}" class="btn btn-outline-danger w-100 p-3">
+                        <i class="fas fa-sign-out-alt d-block mb-2" style="font-size: 1.5rem;"></i>
+                        Sair do Sistema
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add hover effects to permission items
+    document.querySelectorAll('.permission-item').forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('active')) {
+                this.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+                this.style.background = 'rgba(212, 175, 55, 0.05)';
+            }
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                this.style.borderColor = 'rgba(212, 175, 55, 0.2)';
+                this.style.background = 'rgba(255, 255, 255, 0.05)';
+            }
+        });
+    });
+
+    // Animate timeline items on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateX(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.timeline-item').forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-30px)';
+        item.style.transition = `all 0.6s ease ${index * 0.1}s`;
+        observer.observe(item);
+    });
+
+    // Add click animation to action buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            if (!this.href || this.href === '#') {
+                e.preventDefault();
+            }
+            
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+    });
+</script>
+{% endblock %}

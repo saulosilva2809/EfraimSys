@@ -1,0 +1,5 @@
+from .account_model_choices import (
+    ACCOUNT_MODEL_TYPE_CHOICES,
+    ACCOUNT_MODEL_BANK_CHOICES,
+    ACCOUNT_MODEL_CURRENCY_CHOICES
+)

@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastrar Função - Sistema Efraim{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .form-header h1 {
+        color: var(--text-primary);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .form-header .icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .form-header p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: var(--input-bg, #fff);
+        color: var(--text-primary);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 52, 152, 219), 0.1);
+        transform: translateY(-2px);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+        opacity: 0.7;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+        font-family: inherit;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 3rem;
+    }
+
+    .btn {
+        padding: 1rem 2.5rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        color: white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        background: #5a6268;
+        color: white;
+    }
+
+    .breadcrumb {
+        background: transparent;
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .breadcrumb-item {
+        color: var(--text-muted);
+    }
+
+    .breadcrumb-item.active {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "/";
+        color: var(--text-muted);
+        margin: 0 0.5rem;
+    }
+
+    .breadcrumb a {
+        color: var(--accent-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            margin: 1rem;
+            padding: 2rem 1.5rem;
+        }
+
+        .form-header h1 {
+            font-size: 2rem;
+            flex-direction: column;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Form Container -->
+<div class="form-container">
+    <!-- Form Header -->
+    <div class="form-header">
+        <h1>
+            <div class="icon">
+                <i class="fas fa-hard-hat"></i>
+            </div>
+            Cadastrar Nova Função
+        </h1>
+        <p>Adicione uma nova função para os funcionários da empresa</p>
+    </div>
+
+    <!-- Form -->
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Nome da Função -->
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}" class="form-label">
+                <i class="fas fa-tag me-2"></i>
+                Nome da Função *
+            </label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="{{ form.name.id_for_label }}" 
+                name="{{ form.name.name }}" 
+                value="{{ form.name.value|default:'' }}"
+                placeholder="Ex: Pedreiro, Ajudante, Pintor, Eletricista..."
+                required
+            >
+            {% if form.name.errors %}
+                <div class="text-danger mt-2">
+                    {% for error in form.name.errors %}
+                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Descrição -->
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}" class="form-label">
+                <i class="fas fa-align-left me-2"></i>
+                Descrição
+            </label>
+            <textarea 
+                class="form-control" 
+                id="{{ form.description.id_for_label }}" 
+                name="{{ form.description.name }}"
+                placeholder="Descreva as principais atividades e responsabilidades desta função..."
+                rows="4"
+            >{{ form.description.value|default:'' }}</textarea>
+            {% if form.description.errors %}
+                <div class="text-danger mt-2">
+                    {% for error in form.description.errors %}
+                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Salvar Função
+            </button>
+            <a href="{% url 'list_functions_view' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-focus no primeiro campo
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstInput = document.querySelector('input[name="name"]');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    });
+
+    // Validação em tempo real
+    const nameInput = document.querySelector('input[name="name"]');
+    if (nameInput) {
+        nameInput.addEventListener('input', function() {
+            if (this.value.trim().length < 2) {
+                this.style.borderColor = '#dc3545';
+            } else {
+                this.style.borderColor = '#28a745';
+            }
+        });
+    }
+
+    // Confirmação antes de cancelar se houver dados
+    const cancelBtn = document.querySelector('.btn-secondary');
+    const form = document.querySelector('form');
+    
+    if (cancelBtn && form) {
+        cancelBtn.addEventListener('click', function(e) {
+            const formData = new FormData(form);
+            let hasData = false;
+            
+            for (let [key, value] of formData.entries()) {
+                if (key !== 'csrfmiddlewaretoken' && value.trim()) {
+                    hasData = true;
+                    break;
+                }
+            }
+            
+            if (hasData) {
+                if (!confirm('Você tem dados não salvos. Deseja realmente cancelar?')) {
+                    e.preventDefault();
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

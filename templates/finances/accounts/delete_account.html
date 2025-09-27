@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load money_format %}
+
+{% block title %}Excluir Conta - {{ object.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+        box-shadow: var(--card-shadow);
+    }
+    
+    .page-header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+    
+    .page-header .subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+    
+    .content-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .warning-section {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .warning-section h4 {
+        color: #856404;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+    
+    .warning-section p {
+        color: #856404;
+        margin: 0;
+        line-height: 1.6;
+    }
+    
+    .account-details {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+        flex: 0 0 40%;
+    }
+    
+    .detail-value {
+        color: #212529;
+        flex: 1;
+        text-align: right;
+        font-weight: 500;
+    }
+    
+    .balance-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--success-color);
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .status-active {
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(56, 161, 105, 0.2);
+    }
+    
+    .status-inactive {
+        background: rgba(229, 62, 62, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(229, 62, 62, 0.2);
+    }
+    
+    .confirmation-checkbox {
+        background: #f8f9fa;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .confirmation-checkbox label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        cursor: pointer;
+        margin: 0;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+    
+    .confirmation-checkbox input[type="checkbox"] {
+        margin-top: 0.25rem;
+        transform: scale(1.2);
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        align-items: center;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+        margin-top: 2rem;
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    
+    .btn-danger.enabled {
+        opacity: 1;
+        cursor: pointer;
+        pointer-events: auto;
+    }
+    
+    .btn-danger.enabled:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(108, 117, 125, 0.2);
+    }
+    
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .page-header h1 {
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        
+        .page-header .subtitle {
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .content-card {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .detail-label {
+            flex: none;
+        }
+        
+        .detail-value {
+            text-align: left;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .form-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-trash-alt me-3"></i>Excluir Conta</h1>
+        <p class="subtitle">Confirme a exclusão da conta bancária</p>
+    </div>
+
+    <!-- Content Card -->
+    <div class="content-card">
+        <!-- Warning Section -->
+        <div class="warning-section">
+            <h4><i class="fas fa-exclamation-triangle me-2"></i>Atenção!</h4>
+            <p>
+                <strong>Esta ação não pode ser desfeita.</strong> 
+                Ao excluir esta conta, todos os dados associados serão permanentemente removidos do sistema.
+                Certifique-se de que não há transações pendentes ou dados importantes vinculados a esta conta.
+            </p>
+        </div>
+
+        <!-- Account Details -->
+        <div class="account-details">
+            <h5 class="mb-3"><i class="fas fa-info-circle me-2"></i>Detalhes da Conta</h5>
+            
+            <div class="detail-row">
+                <span class="detail-label">Nome da Conta:</span>
+                <span class="detail-value">{{ object.name }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Banco:</span>
+                <span class="detail-value">{{ object.get_bank_display }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Agência:</span>
+                <span class="detail-value">{{ object.agency }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Número da Conta:</span>
+                <span class="detail-value">{{ object.account_number }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Tipo de Conta:</span>
+                <span class="detail-value">{{ object.get_account_type_display }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Saldo Atual:</span>
+                <span class="detail-value balance-value">R$ {{ object.current_balance|money_format }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value">
+                    {% if object.is_active %}
+                        <span class="status-badge status-active">Ativa</span>
+                    {% else %}
+                        <span class="status-badge status-inactive">Inativa</span>
+                    {% endif %}
+                </span>
+            </div>
+            
+            {% if object.description %}
+            <div class="detail-row">
+                <span class="detail-label">Descrição:</span>
+                <span class="detail-value">{{ object.description }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Confirmation Form -->
+        <form method="post" id="deleteForm">
+            {% csrf_token %}
+            
+            <!-- Confirmation Checkbox -->
+            <div class="confirmation-checkbox">
+                <label for="confirmDelete">
+                    <input type="checkbox" id="confirmDelete" name="confirm_delete" required>
+                    Eu confirmo que desejo excluir permanentemente esta conta e entendo que esta ação não pode ser desfeita.
+                </label>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a href="{% url 'detail_account_view' object.pk %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Cancelar
+                </a>
+                <button type="submit" class="btn btn-danger" id="deleteButton">
+                    <i class="fas fa-trash-alt me-2"></i>Confirmar Exclusão
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmCheckbox = document.getElementById('confirmDelete');
+    const deleteButton = document.getElementById('deleteButton');
+    const deleteForm = document.getElementById('deleteForm');
+
+    // Control delete button state
+    function toggleDeleteButton() {
+        if (confirmCheckbox.checked) {
+            deleteButton.classList.add('enabled');
+        } else {
+            deleteButton.classList.remove('enabled');
+        }
+    }
+
+    // Checkbox event listener
+    confirmCheckbox.addEventListener('change', toggleDeleteButton);
+
+    // Form submission confirmation
+    deleteForm.addEventListener('submit', function(e) {
+        if (!confirmCheckbox.checked) {
+            e.preventDefault();
+            alert('Por favor, confirme que deseja excluir esta conta marcando a caixa de seleção.');
+            return false;
+        }
+
+        const confirmed = confirm(
+            'ÚLTIMA CONFIRMAÇÃO:\n\n' +
+            'Você tem certeza absoluta de que deseja excluir a conta "{{ object.name }}"?\n\n' +
+            'Esta ação é IRREVERSÍVEL e todos os dados serão perdidos permanentemente.'
+        );
+
+        if (!confirmed) {
+            e.preventDefault();
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

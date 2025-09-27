@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Excluir Função - Sistema Efraim{% endblock %}
+
+{% block extra_css %}
+<style>
+    .delete-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+
+    .delete-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .delete-header h1 {
+        color: var(--danger-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .delete-header .icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(45deg, var(--danger-color), #ff6b6b);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        box-shadow: 0 10px 20px rgba(229, 62, 62, 0.3);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .delete-header p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .function-info {
+        background: linear-gradient(135deg, rgba(229, 62, 62, 0.1), rgba(229, 62, 62, 0.05));
+        border: 2px solid rgba(229, 62, 62, 0.2);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .function-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--danger-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .function-description {
+        color: var(--text-muted);
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .warning-message {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+        border: 2px solid rgba(255, 193, 7, 0.3);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .warning-icon {
+        font-size: 1.5rem;
+        color: var(--warning-color);
+        flex-shrink: 0;
+    }
+
+    .warning-text {
+        color: var(--text-primary);
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-danger {
+        background: linear-gradient(45deg, var(--danger-color), #ff6b6b);
+        color: white;
+        box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(45deg, #c53030, var(--danger-color));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(229, 62, 62, 0.4);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: var(--light-bg);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: var(--border-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        color: var(--text-primary);
+    }
+
+    .breadcrumb {
+        background: transparent;
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .breadcrumb-item a {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .breadcrumb-item a:hover {
+        color: var(--primary-color);
+    }
+
+    .breadcrumb-item.active {
+        color: var(--text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .delete-container {
+            margin: 1rem;
+            padding: 2rem 1.5rem;
+        }
+
+        .delete-header h1 {
+            font-size: 2rem;
+            flex-direction: column;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Delete Container -->
+<div class="delete-container">
+    <!-- Delete Header -->
+    <div class="delete-header">
+        <h1>
+            <div class="icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            Confirmar Exclusão
+        </h1>
+        <p>Esta ação não pode ser desfeita</p>
+    </div>
+
+    <!-- Function Info -->
+    <div class="function-info">
+        <div class="function-name">{{ object.name }}</div>
+        {% if object.description %}
+            <div class="function-description">{{ object.description }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Warning Message -->
+    <div class="warning-message">
+        <i class="fas fa-exclamation-triangle warning-icon"></i>
+        <div class="warning-text">
+            <strong>Atenção!</strong> Ao excluir esta função, todos os dados relacionados serão permanentemente removidos. 
+            Esta ação não pode ser desfeita.
+        </div>
+    </div>
+
+    <!-- Confirmation Form -->
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="btn-group">
+            <button type="submit" class="btn btn-danger" id="deleteBtn">
+                <i class="fas fa-trash"></i>
+                Confirmar Exclusão
+            </button>
+            <a href="{% url 'list_functions_view' %}" class="btn btn-secondary" id="cancelBtn">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Confirmação adicional antes de excluir
+    document.getElementById('deleteBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const functionName = '{{ object.name|escapejs }}';
+        
+        if (confirm(`Tem certeza que deseja excluir a função "${functionName}"?\n\nEsta ação não pode ser desfeita.`)) {
+            // Adiciona efeito visual de carregamento
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+            this.disabled = true;
+            
+            // Submete o formulário
+            this.closest('form').submit();
+        }
+    });
+
+    // Confirmação antes de cancelar
+    document.getElementById('cancelBtn').addEventListener('click', function(e) {
+        // Permite navegação direta sem confirmação para cancelar
+    });
+
+    // Adiciona efeito de hover nos botões
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        btn.addEventListener('mouseleave', function() {
+            if (!this.disabled) {
+                this.style.transform = 'translateY(0)';
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Sistema Efraim{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* FORÇA BORDAS ARREDONDADAS EM TODOS OS CARDS */
+    .card, .system-card, .dashboard-header {
+        border-radius: 25px !important;
+    }
+    
+    .card-header {
+        border-radius: 25px 25px 0 0 !important;
+    }
+    
+    .card-body {
+        border-radius: 0 0 25px 25px !important;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        border-radius: 25px !important;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+        box-shadow: var(--card-shadow);
+    }
+
+    .welcome-text {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+    .systems-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .system-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 25px !important;
+        padding: 3rem 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        min-height: 280px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .system-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    .system-card:hover::before {
+        left: 100%;
+    }
+
+    .system-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        border-color: var(--accent-color);
+    }
+
+    .system-card:hover .system-icon {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .system-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        font-size: 2.5rem;
+        color: white;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+
+    .system-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.5px;
+    }
+
+    .system-description {
+        color: var(--text-muted);
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 2.5rem;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .system-features {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+    }
+
+    .system-features li {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .system-features li i {
+        color: var(--accent-color);
+        width: 16px;
+    }
+
+    .access-btn {
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: auto;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        letter-spacing: 0.5px;
+    }
+
+    .access-btn:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        color: white;
+        background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+    }
+
+    .coming-soon {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    .coming-soon .system-icon {
+        background: linear-gradient(45deg, #6c757d, #495057);
+    }
+
+    .coming-soon .access-btn {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+
+    .badge-soon {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--accent-color);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 15px;
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .welcome-text {
+            font-size: 2rem;
+        }
+        
+        .systems-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .system-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="welcome-text">Sistema Corporativo Efraim</h1>
+            <p class="welcome-subtitle">Acesse os módulos do sistema para gerenciar sua empresa</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="d-flex align-items-center justify-content-md-end gap-2">
+                <i class="fas fa-user"></i>
+                <span>{{ user.first_name|default:user.username }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Systems Grid -->
+<div class="systems-grid">
+    <!-- Funcionários -->
+    <div class="system-card">
+        <div class="system-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <h3 class="system-title">Funcionários</h3>
+        <p class="system-description">
+            Gerencie todos os aspectos relacionados aos funcionários da empresa
+        </p>
+
+        <a href="{% url 'list_employees_view' %}" class="access-btn">
+            <i class="fas fa-arrow-right me-1"></i>
+            Acessar Sistema
+        </a>
+    </div>
+
+    <!-- Orçamentos -->
+    <div class="system-card">
+        <div class="system-icon">
+            <i class="fas fa-calculator"></i>
+        </div>
+        <h3 class="system-title">Orçamentos</h3>
+        <p class="system-description">
+            Crie e gerencie orçamentos para projetos e serviços
+        </p>
+
+        <a href="#" class="access-btn">
+            <i class="fas fa-arrow-right me-1"></i>
+            Acessar Sistema
+        </a>
+    </div>
+
+    <!-- Finanças -->
+    <div class="system-card">
+        <div class="system-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <h3 class="system-title">Finanças</h3>
+        <p class="system-description">
+            Controle financeiro completo da empresa
+        </p>
+
+        <a href="{% url 'dashboard_finance_view' %}" class="access-btn">
+            <i class="fas fa-arrow-right me-1"></i>
+            Acessar Sistema
+        </a>
+    </div>
+
+    <!-- Folha de Pagamento -->
+    <div class="system-card">
+        <div class="system-icon">
+            <i class="fas fa-money-check-alt"></i>
+        </div>
+        <h3 class="system-title">Folha de Pagamento</h3>
+        <p class="system-description">
+            Processamento completo da folha de pagamento
+        </p>
+
+        <a href="#" class="access-btn">
+            <i class="fas fa-arrow-right me-1"></i>
+            Acessar Sistema
+        </a>
+    </div>
+
+    <!-- Funções -->
+    <div class="system-card">
+        <div class="system-icon">
+            <i class="fas fa-hard-hat"></i>
+        </div>
+        <h3 class="system-title">Funções</h3>
+        <p class="system-description">
+            Cadastro de funções: pedreiro, ajudante, pintor, etc.
+        </p>
+
+        <a href="{% url 'list_functions_view' %}" class="access-btn">
+            <i class="fas fa-arrow-right me-1"></i>
+            Acessar Sistema
+        </a>
+    </div>
+
+    <!-- Relatórios -->
+    <div class="system-card">
+        <div class="system-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+        <h3 class="system-title">Relatórios</h3>
+        <p class="system-description">
+            Relatórios gerenciais e análises de dados
+        </p>
+
+        <a href="#" class="access-btn">
+            <i class="fas fa-arrow-right me-1"></i>
+            Acessar Sistema
+        </a>
+    </div>
+
+    <!-- Configurações -->
+    <div class="system-card">
+        <div class="system-icon">
+            <i class="fas fa-cogs"></i>
+        </div>
+        <h3 class="system-title">Configurações</h3>
+        <p class="system-description">
+            Configurações gerais do sistema e empresa
+        </p>
+
+        <a href="#" class="access-btn">
+            <i class="fas fa-arrow-right me-1"></i>
+            Acessar Sistema
+        </a>
+    </div>
+
+    <!-- Projetos -->
+    <div class="system-card coming-soon">
+        <div class="badge-soon">Em Breve</div>
+        <div class="system-icon">
+            <i class="fas fa-project-diagram"></i>
+        </div>
+        <h3 class="system-title">Projetos</h3>
+        <p class="system-description">
+            Gestão completa de projetos e obras
+        </p>
+
+        <a href="#" class="access-btn">
+            <i class="fas fa-clock me-1"></i>
+            Em Desenvolvimento
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add click effects to system cards
+    document.querySelectorAll('.system-card:not(.coming-soon)').forEach(card => {
+        card.addEventListener('click', function() {
+            const btn = this.querySelector('.access-btn');
+            if (btn) {
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1.05)';
+                }, 100);
+            }
+        });
+    });
+
+    // Add hover sound effect simulation
+    document.querySelectorAll('.system-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('coming-soon')) {
+                this.style.borderColor = 'var(--accent-color)';
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.borderColor = 'var(--border-color)';
+        });
+    });
+</script>
+{% endblock %}
