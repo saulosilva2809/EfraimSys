@@ -16,7 +16,17 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.15.9', 'localhost', '127.0.0.1', 'valentine-unexultant-resistlessly.ngrok-free.dev']
+ALLOWED_HOSTS = [
+    '192.168.15.9',
+    '127.0.0.1',
+    '192.168.15.9',
+    'localhost',
+    'valentine-unexultant-resistlessly.ngrok-free.dev'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://valentine-unexultant-resistlessly.ngrok-free.dev'
+]
 
 # Application definition
 
