@@ -19,7 +19,6 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '192.168.15.9',
     '127.0.0.1',
-    '192.168.15.9',
     'localhost',
     'valentine-unexultant-resistlessly.ngrok-free.dev'
 ]
