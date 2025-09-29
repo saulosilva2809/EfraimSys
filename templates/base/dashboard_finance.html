@@ -121,6 +121,10 @@
         color: var(--danger-color);
     }
 
+    .trend-neutral {
+        color: var(--text-muted);
+    }
+
     /* Layout Principal */
     .main-grid {
         display: grid;
@@ -355,9 +359,9 @@
             </div>
             <div class="kpi-value" id="total-receitas">R$ {{ total_recipes|money_format }}</div>
             <div class="kpi-label">Total de Receitas</div>
-            <div class="kpi-trend trend-up">
-                <i class="fas fa-arrow-up"></i>
-                <span>+12.5% vs mês anterior</span>
+            <div class="kpi-trend {% if recipes_variation >= 5 %}trend-up{% elif recipes_variation >= -5 and recipes_variation < 5 %}trend-neutral{% else %}trend-down{% endif %}">
+                <i class="fas {% if recipes_variation >= 5 %}fa-arrow-up{% elif recipes_variation >= -5 and recipes_variation < 5 %}fa-minus{% else %}fa-arrow-down{% endif %}"></i>
+                <span>{% if recipes_variation >= 0 %}+{% endif %}{{ recipes_variation|floatformat:1 }}% vs mês anterior</span>
             </div>
         </div>
 
@@ -367,9 +371,9 @@
             </div>
             <div class="kpi-value" id="total-despesas">R$ {{ total_expenses|money_format }}</div>
             <div class="kpi-label">Total de Despesas</div>
-            <div class="kpi-trend trend-down">
-                <i class="fas fa-arrow-down"></i>
-                <span>+5.2% vs mês anterior</span>
+            <div class="kpi-trend {% if expenses_variation <= 0 %}trend-up{% elif expenses_variation > 0 and expenses_variation <= 5 %}trend-neutral{% else %}trend-down{% endif %}">
+                <i class="fas {% if expenses_variation <= 0 %}fa-arrow-down{% elif expenses_variation > 0 and expenses_variation <= 5 %}fa-minus{% else %}fa-arrow-up{% endif %}"></i>
+                <span>{% if expenses_variation >= 0 %}+{% endif %}{{ expenses_variation|floatformat:1 }}% vs mês anterior</span>
             </div>
         </div>
 
@@ -379,9 +383,9 @@
             </div>
             <div class="kpi-value" id="saldo-liquido">R$ {{ net_balance|money_format }}</div>
             <div class="kpi-label">Saldo Líquido</div>
-            <div class="kpi-trend trend-up">
-                <i class="fas fa-arrow-up"></i>
-                <span>+18.7% vs mês anterior</span>
+            <div class="kpi-trend {% if net_balance_variation >= 5 %}trend-up{% elif net_balance_variation >= -5 and net_balance_variation < 5 %}trend-neutral{% else %}trend-down{% endif %}">
+                <i class="fas {% if net_balance_variation >= 5 %}fa-arrow-up{% elif net_balance_variation >= -5 and net_balance_variation < 5 %}fa-minus{% else %}fa-arrow-down{% endif %}"></i>
+                <span>{% if net_balance_variation >= 0 %}+{% endif %}{{ net_balance_variation|floatformat:1 }}% vs mês anterior</span>
             </div>
         </div>
 
@@ -393,7 +397,7 @@
             <div class="kpi-label">Saldo Total das Contas</div>
             <div class="kpi-trend trend-up">
                 <i class="fas fa-arrow-up"></i>
-                <span>+3.1% vs mês anterior</span>
+                <span>Saldo atual das contas</span>
             </div>
         </div>
     </div>
