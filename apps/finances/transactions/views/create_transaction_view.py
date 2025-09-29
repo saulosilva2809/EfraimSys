@@ -7,7 +7,7 @@ from apps.finances.transactions.models import TransactionModel
 
 class CreateTransactionView(CreateView):
     model = TransactionModel
-    template_name = 'finances/transaction/create_transaction.html'
+    template_name = 'finances/transactions/create_transaction.html'
     fields = '__all__'
     success_url = reverse_lazy('list_transactions_view')
 
