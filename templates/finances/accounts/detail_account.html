@@ -332,7 +332,7 @@
                 <i class="fas fa-arrow-left me-2"></i>
                 Voltar à Lista
             </a>
-            <a href="{% url 'list_transactions_view' %}" class="btn btn-info">
+            <a href="{% url 'list_transactions_view' %}?account={{ object.pk }}" class="btn btn-info">
                 <i class="fas fa-exchange-alt me-2"></i>
                 Ver Transações
             </a>
