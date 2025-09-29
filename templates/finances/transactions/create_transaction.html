@@ -1,0 +1,489 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastrar Nova Transação - Sistema Financeiro{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 25px;
+        padding: 3rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .form-header h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .form-header .icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .form-header p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .form-section {
+        margin-bottom: 2.5rem;
+        padding: 2rem;
+        background: var(--light-bg);
+        border-radius: 25px;
+        border: 1px solid var(--border-color);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--accent-color);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: var(--primary-color);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .form-control:invalid {
+        border-color: var(--danger-color);
+    }
+
+    .form-control:valid {
+        border-color: var(--success-color);
+    }
+
+    .form-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+
+    .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-file {
+        padding: 1rem;
+        border: 2px dashed var(--border-color);
+        border-radius: 25px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: var(--light-bg);
+    }
+
+    .form-file:hover {
+        border-color: var(--accent-color);
+        background: rgba(52, 152, 219, 0.05);
+    }
+
+    .form-file input[type="file"] {
+        display: none;
+    }
+
+    .file-upload-text {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .file-upload-icon {
+        font-size: 2rem;
+        color: var(--accent-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        color: white;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+    }
+
+    .btn-secondary {
+        background: var(--light-bg);
+        color: var(--secondary-color);
+        border: 2px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+        background: var(--border-color);
+        transform: translateY(-2px);
+    }
+
+    .required-field::after {
+        content: " *";
+        color: var(--danger-color);
+        font-weight: bold;
+    }
+
+    .help-text {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+        font-style: italic;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            margin: 1rem;
+            padding: 2rem;
+            border-radius: 25px;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+    }
+
+    .transaction-type-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .type-card {
+        padding: 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        background: white;
+    }
+
+    .type-card:hover {
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+    }
+
+    .type-card.selected {
+        border-color: var(--accent-color);
+        background: rgba(52, 152, 219, 0.05);
+    }
+
+    .type-card input[type="radio"] {
+        display: none;
+    }
+
+    .type-card-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .type-card-receita .type-card-icon {
+        color: var(--success-color);
+    }
+
+    .type-card-despesa .type-card-icon {
+        color: var(--danger-color);
+    }
+
+    .type-card-label {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="form-container">
+        <!-- Cabeçalho do Formulário -->
+        <div class="form-header">
+            <h1>
+                <div class="icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                Nova Transação
+            </h1>
+            <p>Registre uma nova transação financeira no sistema</p>
+        </div>
+
+        <!-- Formulário -->
+        <form method="post" enctype="multipart/form-data" id="transactionForm">
+            {% csrf_token %}
+            
+            <!-- Seção: Informações Básicas -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    Informações Básicas
+                </h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.account.id_for_label }}" class="form-label required-field">Conta</label>
+                        {{ form.account }}
+                        {% if form.account.help_text %}
+                            <div class="help-text">{{ form.account.help_text }}</div>
+                        {% endif %}
+                        {% if form.account.errors %}
+                            <div class="text-danger">{{ form.account.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.value.id_for_label }}" class="form-label required-field">Valor</label>
+                        {{ form.value }}
+                        {% if form.value.help_text %}
+                            <div class="help-text">{{ form.value.help_text }}</div>
+                        {% endif %}
+                        {% if form.value.errors %}
+                            <div class="text-danger">{{ form.value.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required-field">Tipo de Transação</label>
+                    <div class="transaction-type-cards">
+                        <div class="type-card type-card-receita" data-value="receita">
+                            <input type="radio" name="{{ form.type_transaction.name }}" value="receita" id="type_receita">
+                            <div class="type-card-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="type-card-label">Receita</div>
+                        </div>
+                        <div class="type-card type-card-despesa" data-value="despesa">
+                            <input type="radio" name="{{ form.type_transaction.name }}" value="despesa" id="type_despesa">
+                            <div class="type-card-icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="type-card-label">Despesa</div>
+                        </div>
+                    </div>
+                    {% if form.type_transaction.errors %}
+                        <div class="text-danger">{{ form.type_transaction.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Seção: Detalhes -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-edit"></i>
+                    Detalhes da Transação
+                </h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Descrição</label>
+                    {{ form.description }}
+                    {% if form.description.help_text %}
+                        <div class="help-text">{{ form.description.help_text }}</div>
+                    {% endif %}
+                    {% if form.description.errors %}
+                        <div class="text-danger">{{ form.description.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.proof.id_for_label }}" class="form-label">Comprovante</label>
+                    <div class="form-file" onclick="document.getElementById('{{ form.proof.id_for_label }}').click()">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div>Clique para selecionar um arquivo</div>
+                        <div class="file-upload-text">Formatos aceitos: JPG, PNG, PDF (máx. 5MB)</div>
+                        {{ form.proof }}
+                    </div>
+                    {% if form.proof.help_text %}
+                        <div class="help-text">{{ form.proof.help_text }}</div>
+                    {% endif %}
+                    {% if form.proof.errors %}
+                        <div class="text-danger">{{ form.proof.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Ações do Formulário -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Salvar Transação
+                </button>
+                <a href="{% url 'list_transactions_view' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manipulação dos cards de tipo de transação
+    const typeCards = document.querySelectorAll('.type-card');
+    const radioInputs = document.querySelectorAll('input[name="{{ form.type_transaction.name }}"]');
+    
+    typeCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const value = this.dataset.value;
+            const radio = document.getElementById('type_' + value);
+            
+            // Remove seleção de todos os cards
+            typeCards.forEach(c => c.classList.remove('selected'));
+            
+            // Adiciona seleção ao card clicado
+            this.classList.add('selected');
+            
+            // Marca o radio button correspondente
+            radio.checked = true;
+        });
+    });
+    
+    // Aplicar classes CSS aos campos do formulário Django
+    const formControls = document.querySelectorAll('input, select, textarea');
+    formControls.forEach(control => {
+        if (control.type !== 'radio' && control.type !== 'file') {
+            control.classList.add('form-control');
+        }
+        
+        if (control.tagName === 'SELECT') {
+            control.classList.add('form-select');
+        }
+        
+        if (control.tagName === 'TEXTAREA') {
+            control.classList.add('form-textarea');
+        }
+    });
+    
+    // Manipulação do upload de arquivo
+    const fileInput = document.getElementById('{{ form.proof.id_for_label }}');
+    const fileUploadDiv = document.querySelector('.form-file');
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'Nenhum arquivo selecionado';
+            const fileText = fileUploadDiv.querySelector('.file-upload-text');
+            fileText.textContent = fileName;
+        });
+    }
+    
+    // Validação do formulário
+    const form = document.getElementById('transactionForm');
+    form.addEventListener('submit', function(e) {
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Por favor, preencha todos os campos obrigatórios.');
+        }
+    });
+});
+</script>
+{% endblock %}
