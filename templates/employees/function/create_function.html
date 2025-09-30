@@ -208,7 +208,7 @@
     </div>
 
     <!-- Form -->
-    <form method="post">
+    <form method="post" id="functionForm">
         {% csrf_token %}
         
         <!-- Nome da Função -->
@@ -257,9 +257,37 @@
             {% endif %}
         </div>
 
+        <!-- Tipo de Pagamento -->
+        <div class="form-group">
+            <label for="{{ form.payment_type.id_for_label }}" class="form-label">
+                <i class="fas fa-money-bill-wave me-2"></i>
+                Tipo de Pagamento *
+            </label>
+            <select 
+                class="form-control" 
+                id="{{ form.payment_type.id_for_label }}" 
+                name="{{ form.payment_type.name }}"
+                required
+            >
+                <option value="">Selecione o tipo de pagamento</option>
+                {% for value, label in form.payment_type.field.choices %}
+                    <option value="{{ value }}" {% if form.payment_type.value == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% if form.payment_type.errors %}
+                <div class="text-danger mt-2">
+                    {% for error in form.payment_type.errors %}
+                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
         <!-- Buttons -->
         <div class="btn-group">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" id="saveBtn">
                 <i class="fas fa-save"></i>
                 Salvar Função
             </button>

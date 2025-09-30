@@ -1,0 +1,1 @@
+from .function_model_choices import PAYMENT_METHOD_TYPE_CHOICES

@@ -9,7 +9,7 @@ from apps.employees.models import FunctionModel
 class CreateFunctionView(CreateView):
     model = FunctionModel
     template_name = 'employees/function/create_function.html'
-    fields = ['name', 'description']
+    fields = ['name', 'description', 'payment_type']
     success_url = reverse_lazy('list_functions_view')
 
     def form_valid(self, form):

@@ -8,7 +8,7 @@ from apps.employees.models import FunctionModel
 class UpdateFunctionView(UpdateView):
     model = FunctionModel
     template_name = 'employees/function/update_function.html'
-    fields = ['name', 'description']
+    fields = ['name', 'description', 'payment_type']
     success_url = reverse_lazy('list_functions_view')
 
     def form_valid(self, form):
