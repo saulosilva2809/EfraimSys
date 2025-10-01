@@ -18,7 +18,7 @@ class EmployeeModel(BaseModel):
     admission_date = models.DateField()
     resignation_date = models.DateField(null=True, blank=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2)
-    workload = models.IntegerField(default=40)
+    workload = models.IntegerField(default=40, null=True, blank=True)
     employment_type = models.CharField(
         max_length=50,
         choices=[('CLT', 'CLT'), ('At', 'Autônomo')]

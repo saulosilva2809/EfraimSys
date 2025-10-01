@@ -345,5 +345,151 @@
             }
         });
     }
+
+    // Suporte AJAX para formulário
+    const functionForm = document.getElementById('functionForm');
+    const saveBtn = document.getElementById('saveBtn');
+    
+    if (functionForm && saveBtn) {
+        functionForm.addEventListener('submit', function(e) {
+            // Verificar se é uma requisição AJAX (quando chamado de modal)
+            if (window.isAjaxRequest) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const originalText = saveBtn.innerHTML;
+                
+                // Mostrar loading
+                saveBtn.disabled = true;
+                saveBtn.classList.add('loading');
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                
+                fetch(this.action || window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Disparar evento customizado para notificar o modal pai
+                        window.dispatchEvent(new CustomEvent('functionCreated', {
+                            detail: data.function
+                        }));
+                        
+                        // Mostrar mensagem de sucesso
+                        showSuccessMessage(data.message);
+                        
+                        // Limpar formulário
+                        functionForm.reset();
+                        
+                    } else {
+                        throw new Error(data.message || 'Erro ao salvar função');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    showErrorMessage('Erro ao adicionar função. Tente novamente.');
+                    
+                    // Mostrar erros de validação se existirem
+                    if (error.errors) {
+                        Object.keys(error.errors).forEach(field => {
+                            const fieldElement = document.querySelector(`[name="${field}"]`);
+                            if (fieldElement) {
+                                fieldElement.style.borderColor = '#dc3545';
+                                
+                                // Criar ou atualizar mensagem de erro
+                                let errorDiv = fieldElement.parentNode.querySelector('.text-danger');
+                                if (!errorDiv) {
+                                    errorDiv = document.createElement('div');
+                                    errorDiv.className = 'text-danger mt-2';
+                                    fieldElement.parentNode.appendChild(errorDiv);
+                                }
+                                errorDiv.innerHTML = `<small><i class="fas fa-exclamation-circle me-1"></i>${error.errors[field][0]}</small>`;
+                            }
+                        });
+                    }
+                })
+                .finally(() => {
+                    // Restaurar botão
+                    saveBtn.disabled = false;
+                    saveBtn.classList.remove('loading');
+                    saveBtn.innerHTML = originalText;
+                });
+            }
+        });
+    }
+
+    // Função para mostrar mensagem de sucesso
+    function showSuccessMessage(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 9999;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        `;
+        notification.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Função para mostrar mensagem de erro
+    function showErrorMessage(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 9999;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        `;
+        notification.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i>${message}`;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 4000);
+    }
+
+    // Adicionar animações CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        .loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    `;
+    document.head.appendChild(style);
 </script>
 {% endblock %}

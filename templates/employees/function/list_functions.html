@@ -182,6 +182,16 @@
         transform: scale(1.1);
     }
 
+    .btn-config {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-config:hover {
+        background: #5a6268;
+        transform: scale(1.1);
+    }
+
     .btn-delete {
         background: #dc3545;
         color: white;
@@ -388,6 +398,9 @@
                                     <a href="{% url 'update_function_view' function.pk %}" class="btn-action btn-edit" title="Editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
+                                    <button class="btn-action btn-config" title="Configurar Pagamento">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
                                     <a href="{% url 'delete_function_view' function.pk %}" class="btn-action btn-delete" title="Excluir">
                                         <i class="fas fa-trash"></i>
                                     </a>
