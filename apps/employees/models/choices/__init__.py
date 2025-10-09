@@ -1,1 +1,1 @@
-from .function_model_choices import PAYMENT_METHOD_TYPE_CHOICES
+from .employee_model_choices import PAYMENT_METHOD_TYPE_CHOICES

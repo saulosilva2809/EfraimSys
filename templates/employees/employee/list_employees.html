@@ -358,6 +358,7 @@
                     <th>Funcionário</th>
                     <th>Função</th>
                     <th>Telefone</th>
+                    <th>Tipo de Pagamento</th>
                     <th>Status</th>
                     <th>Data de Cadastro</th>
                     <th>Ações</th>
@@ -379,6 +380,13 @@
                         <td>
                             {% if employee.phone %}
                                 {{ employee.phone }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if employee.payment_type %}
+                                <span class="badge bg-info">{{ employee.get_payment_type_display }}</span>
                             {% else %}
                                 <span class="text-muted">-</span>
                             {% endif %}
