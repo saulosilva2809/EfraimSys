@@ -1,8 +1,6 @@
-from .choices import PAYMENT_METHOD_TYPE_CHOICES
-from .function_model import FunctionModel
-
 from django.db import models
 
+from .function_model import FunctionModel
 from apps.base.models import BaseModel
 
 
@@ -22,7 +20,6 @@ class EmployeeModel(BaseModel):
         max_length=50,
         choices=[('CLT', 'CLT'), ('At', 'Autônomo')]
     )
-    payment_type = models.CharField(max_length=50, choices=PAYMENT_METHOD_TYPE_CHOICES, default='day')
     obs = models.TextField(null=True, blank=True)
 
     class Meta:
